@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { cn } from "../lib/utils/cn";
+import { cn } from "../lib/utils";
 
 interface Props {
   children: React.ReactNode;
