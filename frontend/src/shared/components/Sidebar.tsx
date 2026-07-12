@@ -74,7 +74,7 @@ export function Sidebar() {
         <button
           type='button'
           className='flex w-full items-center gap-2.5 rounded-lg p-2 text-left transition-colors hover:bg-neutral-200/50 cursor-pointer'>
-          <span className='inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white ring-2 bg-indigo-500 ring-indigo-500 size-9 text-xs'>
+          <span className='inline-flex shrink-0 items-center justify-center rounded-full font-semibold text-white bg-indigo-500 ring-indigo-500 size-9 text-xs'>
             {USER.charAt(0).toUpperCase()}
             {USER.split(" ")[1].charAt(0).toUpperCase()}
           </span>
