@@ -1,0 +1,4 @@
+infrastructure/secrets/
+.vscode/
+.env
+.env.chatwoot

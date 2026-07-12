@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: eolian-postgres
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: eolian
+      POSTGRES_PASSWORD: eolian
+      POSTGRES_DB: eolian
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eolian -d eolian"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../backend
+
+    container_name: eolian-backend
+
+    restart: unless-stopped
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ../backend:/app
+      - ./secrets:/secrets:ro
+
+    env_file:
+      - .env
+
+    environment:
+      - FIREBASE_CREDENTIALS=/secrets/service_account.json
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    name: eolian-postgres-data

@@ -1,0 +1,63 @@
+services:
+  chatwoot-postgres:
+    image: postgres:17
+    container_name: chatwoot-postgres
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: chatwoot
+      POSTGRES_PASSWORD: chatwoot
+      POSTGRES_DB: chatwoot
+
+    volumes:
+      - chatwoot_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatwoot -d chatwoot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  chatwoot-redis:
+    image: redis:8
+    container_name: chatwoot-redis
+
+    restart: unless-stopped
+
+    command: redis-server --appendonly yes
+
+    volumes:
+      - chatwoot_redis_data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  chatwoot:
+    image: chatwoot/chatwoot:latest
+    container_name: chatwoot
+
+    restart: unless-stopped
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - .env.chatwoot
+
+    depends_on:
+      chatwoot-postgres:
+        condition: service_healthy
+
+      chatwoot-redis:
+        condition: service_healthy
+
+volumes:
+  chatwoot_postgres_data:
+    name: chatwoot-postgres-data
+
+  chatwoot_redis_data:
+    name: chatwoot-redis-data
